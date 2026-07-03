@@ -1,0 +1,6 @@
+{
+  "name": "Lucky Bhaiya",
+  "description": "NCERT Notes, Important Questions, PYQs & MCQs for Class 9 & 10 CBSE Exam Preparation. Support poor students by learning and watching ads.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny catch-all safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global utility helpers
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 1. Subjects
+    function isValidSubject(data) {
+      return data.id is string
+        && data.name is string
+        && (!('icon' in data) || data.icon is string)
+        && (!('color' in data) || data.color is string)
+        && data.classId is string;
+    }
+    match /subjects/{subjectId} {
+      allow read: if true;
+      allow write: if isValidId(subjectId) && isValidSubject(request.resource.data);
+    }
+
+    // 2. Chapters
+    function isValidChapter(data) {
+      return data.id is string
+        && data.classId is string
+        && data.subjectId is string
+        && data.title is string
+        && data.number is number
+        && (!('notes' in data) || data.notes is string)
+        && (!('mcqs' in data) || data.mcqs is list)
+        && (!('pyqs' in data) || data.pyqs is list)
+        && (!('mindmap' in data) || data.mindmap is string)
+        && (!('faqs' in data) || data.faqs is list);
+    }
+    match /chapters/{chapterId} {
+      allow read: if true;
+      allow write: if isValidId(chapterId) && isValidChapter(request.resource.data);
+    }
+
+    // 3. Comments
+    function isValidComment(data) {
+      return data.id is string
+        && data.chapterId is string
+        && data.author is string
+        && (!('text' in data) || data.text is string)
+        && (!('isDoubt' in data) || data.isDoubt is bool)
+        && (!('resolved' in data) || data.resolved is bool)
+        && (!('upvotes' in data) || data.upvotes is number)
+        && (!('isPinned' in data) || data.isPinned is bool)
+        && (!('replies' in data) || data.replies is list);
+    }
+    match /comments/{commentId} {
+      allow read: if true;
+      allow write: if isValidId(commentId) && isValidComment(request.resource.data);
+    }
+
+    // 4. User Preferences
+    function isValidUserPreference(data) {
+      return (!('bookmarks' in data) || data.bookmarks is list)
+        && (!('creatorMode' in data) || data.creatorMode is bool)
+        && (!('completedChapters_class9' in data) || data.completedChapters_class9 is list)
+        && (!('completedChapters_class10' in data) || data.completedChapters_class10 is list)
+        && (!('myCommentIds' in data) || data.myCommentIds is list);
+    }
+    match /user_preferences/{userId} {
+      allow read: if isValidId(userId);
+      allow write: if isValidId(userId) && isValidUserPreference(request.resource.data);
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "Subject": {
+      "title": "Subject",
+      "description": "A subject taught in Class 9 or Class 10",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "icon": { "type": "string" },
+        "color": { "type": "string" },
+        "classId": { "type": "string" }
+      },
+      "required": ["id", "name", "classId"]
+    },
+    "Chapter": {
+      "title": "Chapter",
+      "description": "A full chapter containing CBSE syllabus notes, MCQs, and PYQs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "classId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "title": { "type": "string" },
+        "number": { "type": "number" },
+        "notes": { "type": "string" },
+        "mcqs": { "type": "array" },
+        "pyqs": { "type": "array" },
+        "mindmap": { "type": "string" },
+        "faqs": { "type": "array" }
+      },
+      "required": ["id", "classId", "subjectId", "title", "number"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Student questions/doubts or teacher replies for active learning",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "author": { "type": "string" },
+        "avatarColor": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "text": { "type": "string" },
+        "isDoubt": { "type": "boolean" },
+        "resolved": { "type": "boolean" },
+        "upvotes": { "type": "number" },
+        "isPinned": { "type": "boolean" },
+        "replies": { "type": "array" }
+      },
+      "required": ["id", "chapterId", "author", "text"]
+    },
+    "UserPreference": {
+      "title": "UserPreference",
+      "description": "Durable user bookmarks, creator mode flag, and progress tracking details",
+      "type": "object",
+      "properties": {
+        "bookmarks": { "type": "array" },
+        "creatorMode": { "type": "boolean" },
+        "completedChapters_class9": { "type": "array" },
+        "completedChapters_class10": { "type": "array" },
+        "myCommentIds": { "type": "array" }
+      }
+    }
+  },
+  "firestore": {
+    "subjects/{subjectId}": {
+      "schema": "Subject",
+      "description": "Class 9 and Class 10 subjects list"
+    },
+    "chapters/{chapterId}": {
+      "schema": "Chapter",
+      "description": "Active NCERT/CBSE chapter contents and question banks"
+    },
+    "comments/{commentId}": {
+      "schema": "Comment",
+      "description": "Community doubts, answers, and Teacher-resolved comments"
+    },
+    "user_preferences/{userId}": {
+      "schema": "UserPreference",
+      "description": "Personalized bookmarks, course progress, and comment ownership"
+    }
+  }
+}
